@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ person.name }} 的相册</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="global-nav fade-up">
+        <div class="nav-left">
+            <div class="nav-logo">AI 智能相册</div>
+            <div class="nav-links">
+                <a href="/">🏠 首页</a>
+                <a href="/favorites">❤️ 收藏夹</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="page-badge">👤 {{ person.name }}</div>
+        </div>
+    </div>
+
+    <div class="timeline-layout fade-up">
+        <div class="timeline-content">
+            {% for month_key, dates in grouped_photos.items() %}
+            <div class="month-section" id="month-{{ loop.index }}">
+                <h3 class="month-title fade-up">{{ month_key }}</h3>
+                
+                {% for exact_date, photos in dates.items() %}
+                <div class="date-group fade-up">
+                    <div class="date-title">{{ exact_date }}</div>
+                    <div class="photo-grid">
+                        {% for photo in photos %}
+                        <a href="/local_image?path={{ photo.file_path | urlencode }}" 
+                           class="photo-wrapper fade-up" 
+                           data-id="{{ photo.id }}"
+                           style="transition-delay: {{ loop.index0 * 0.02 }}s;">
+                            
+                            <img src="/static/{{ photo.thumbnail_path | replace('\\', '/') }}" 
+                                 loading="lazy" alt="Photo" onload="this.classList.add('loaded')">
+                            
+                            <button class="thumb-fav-btn {{ 'active' if photo.is_favorite else '' }}" 
+                                    onclick="toggleFav({{ photo.id }}, event, this)">
+                                {{ '❤️' if photo.is_favorite else '🤍' }}
+                            </button>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="timeline-sidebar fade-up">
+            {% for month_key in grouped_photos.keys() %}
+            <a href="#month-{{ loop.index }}" class="timeline-dot">
+                {{ month_key | replace('年', '.') | replace('月', '') }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

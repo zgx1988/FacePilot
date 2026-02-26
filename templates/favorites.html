@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="global-nav fade-up">
+        <div class="nav-left">
+            <div class="nav-logo">AI 智能相册</div>
+            <div class="nav-links">
+                <a href="/">🏠 首页</a>
+                <a href="/favorites" class="active">❤️ 收藏夹</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="page-badge">✨ 我的珍藏</div>
+        </div>
+    </div>
+
+    <div class="timeline-layout fade-up">
+        <div class="timeline-content">
+            {% if not grouped_photos %}
+            <div style="text-align: center; color: var(--text-secondary); margin-top: 50px; font-size: 16px;">
+                <p>🧐 收藏夹还是空的呢~</p>
+                <p style="margin-top: 10px;">快去家人的时间轴里，点亮照片右上角的小红心 ❤️ 吧！</p>
+            </div>
+            {% endif %}
+
+            {% for month_key, dates in grouped_photos.items() %}
+            <div class="month-section" id="month-{{ loop.index }}">
+                <h3 class="month-title fade-up">{{ month_key }}</h3>
+                
+                {% for exact_date, photos in dates.items() %}
+                <div class="date-group fade-up">
+                    <div class="date-title">{{ exact_date }}</div>
+                    <div class="photo-grid">
+                        {% for photo in photos %}
+                        <a href="/local_image?path={{ photo.file_path | urlencode }}" 
+                           class="photo-wrapper fade-up" 
+                           data-id="{{ photo.id }}"
+                           style="transition-delay: {{ loop.index0 * 0.02 }}s;">
+                            
+                            <img src="/static/{{ photo.thumbnail_path | replace('\\', '/') }}" 
+                                 loading="lazy" alt="Photo" onload="this.classList.add('loaded')">
+                            
+                            <button class="thumb-fav-btn active" onclick="toggleFav({{ photo.id }}, event, this)">❤️</button>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="timeline-sidebar fade-up">
+            {% for month_key in grouped_photos.keys() %}
+            <a href="#month-{{ loop.index }}" class="timeline-dot">
+                {{ month_key | replace('年', '.') | replace('月', '') }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+/* ================== 全局变量定义 (支持深色模式) ================== */
+:root {
+    --bg-color: #f4f5f7;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent-color: #007aff;
+    --danger-color: #ff3b30;
+    --success-color: #34c759;
+    --border-color: #dddddd;
+    --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+    --lightbox-bg: rgba(0, 0, 0, 0.92);
+}
+
+/* 深色模式自动适配 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121212;
+        --card-bg: #1e1e1e;
+        --text-primary: #e0e0e0;
+        --text-secondary: #aaaaaa;
+        --accent-color: #0a84ff;
+        --border-color: #333333;
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.2);
+    }
+}
+
+/* ================== 基础样式与动画 ================== */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    padding-bottom: 100px; /* 为底部导出栏留空 */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+h2, h3 { color: var(--text-primary); font-weight: 600; }
+a { text-decoration: none; color: inherit; }
+
+/* 滚动浮现瀑布流动画 */
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ================== 全局顶部高级导航栏 ================== */
+.global-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; position: sticky; top: 0; left: 0; right: 0;
+    background: rgba(255, 255, 255, 0.85); 
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    z-index: 1000; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;
+}
+@media (prefers-color-scheme: dark) {
+    .global-nav { background: rgba(30, 30, 30, 0.85); }
+}
+.nav-left { display: flex; align-items: center; gap: 40px; }
+.nav-logo { font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: 0.5px; }
+.nav-links { display: flex; gap: 25px; }
+.nav-links a {
+    font-size: 15px; font-weight: 600; color: var(--text-secondary);
+    padding-bottom: 4px; border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.nav-links a:hover { color: var(--accent-color); }
+.nav-links a.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+.nav-right { display: flex; align-items: center; }
+.page-badge { 
+    background: var(--bg-color); color: var(--text-primary); 
+    padding: 6px 16px; border-radius: 20px; font-size: 14px; 
+    font-weight: bold; border: 1px solid var(--border-color); 
+}
+
+/* ================== 组件：按钮与输入框 ================== */
+.btn {
+    background: var(--accent-color); color: white; border: none; padding: 10px 22px; border-radius: 10px;
+    cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { background: var(--text-secondary); opacity: 0.5; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color); }
+.btn-outline:hover { background: var(--accent-color); color: white; }
+.btn-danger { background: var(--danger-color); }
+
+input[type="text"] {
+    padding: 12px 15px; border: 1px solid var(--border-color); border-radius: 10px;
+    font-size: 14px; outline: none; background: var(--card-bg); color: var(--text-primary);
+    transition: border-color 0.2s;
+}
+input[type="text"]:focus { border-color: var(--accent-color); }
+
+/* ================== 组件：控制面板与进度条 ================== */
+.control-panel {
+    background: var(--card-bg); padding: 25px; border-radius: 16px;
+    box-shadow: var(--shadow-sm); margin-bottom: 35px;
+    display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;
+}
+.scan-group { flex: 1; min-width: 300px; }
+.input-row { display: flex; gap: 10px; width: 100%; }
+.input-row input { flex: 1; }
+.progress-container { margin-top: 15px; display: none; }
+.progress-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: var(--success-color); width: 0%; transition: width 0.3s ease-out; }
+.progress-text { font-size: 13px; color: var(--text-secondary); margin-top: 8px; display: flex; justify-content: space-between; }
+
+/* ================== 首页：人物网格与果冻特效 ================== */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 30px 20px; }
+.card-container { position: relative; perspective: 1000px; }
+.card { text-align: center; cursor: pointer; position: relative; }
+
+/* 头像基础样式与弹性曲线 */
+.cover-wrapper {
+    position: relative; width: 120px; height: 120px; margin: 0 auto;
+    border-radius: 50%; padding: 4px; background: var(--card-bg);
+    box-shadow: var(--shadow-sm); 
+    /* 核心：物理弹性果冻过渡效果 */
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.cover { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+/* 【酷炫交互】非选中状态下，鼠标悬停时的果冻放大弹跳效果 */
+.card:not(.selected):hover .cover-wrapper {
+    transform: scale(1.15) translateY(-5px);
+    border-color: #ffffff;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* 多选模式下的选中状态 */
+.card.selected .cover-wrapper {
+    background: var(--success-color);
+    box-shadow: 0 0 0 4px var(--success-color), var(--shadow-md);
+    animation: springCheck 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes springCheck { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+/* 选中对勾图标 */
+.check-icon {
+    position: absolute; bottom: 0; right: 0; width: 28px; height: 28px;
+    background: var(--success-color); color: white; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; opacity: 0; transform: scale(0); transition: all 0.3s ease; border: 2px solid var(--card-bg);
+}
+.card.selected .check-icon { opacity: 1; transform: scale(1); }
+
+/* 名字与按钮 */
+.name-wrapper { margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.name { font-size: 15px; font-weight: 600; max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edit-btn, .hide-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); transition: color 0.2s; }
+.edit-btn:hover { color: var(--accent-color); }
+.hide-btn {
+    position: absolute; top: 0; right: 0; background: var(--danger-color); color: white;
+    width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: scale(0.8); transition: all 0.2s ease; box-shadow: var(--shadow-sm); z-index: 2;
+}
+.card-container:hover .hide-btn { opacity: 1; transform: scale(1); }
+.hide-btn:hover { background: #d70015; transform: scale(1.1); }
+
+/* ================== 底部导出栏 (悬浮动画) ================== */
+.export-bar {
+    position: fixed; bottom: -120px; left: 0; width: 100%;
+    background: rgba(var(--card-bg), 0.9); backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1); padding: 20px 0;
+    transition: bottom 0.4s cubic-bezier(0.19, 1, 0.22, 1); z-index: 900; border-top: 1px solid var(--border-color);
+}
+.export-bar.active { bottom: 0; }
+.export-content { display: flex; gap: 15px; align-items: center; justify-content: space-between; max-width: 1000px; margin: 0 auto; padding: 0 20px;}
+.export-info { font-weight: 700; font-size: 16px; }
+
+/* ================== 时间轴/相册页面样式 ================== */
+.timeline-layout { display: flex; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 40px; }
+.timeline-content { flex: 1; }
+.month-section { margin-bottom: 50px; position: relative; }
+.month-title {
+    position: sticky; top: 80px; background: var(--bg-color);
+    padding: 10px 0; font-size: 22px; z-index: 10; margin-bottom: 20px;
+}
+.date-group { margin-bottom: 30px; }
+.date-title { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: var(--text-secondary); }
+
+/* 照片墙排版 */
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.photo-wrapper {
+    aspect-ratio: 1 / 1; overflow: hidden; border-radius: 12px; background: var(--border-color);
+    cursor: zoom-in; position: relative;
+}
+.photo-wrapper img {
+    width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s, opacity 0.3s; opacity: 0;
+}
+.photo-wrapper img.loaded { opacity: 1; } /* 骨架屏加载完毕 */
+.photo-wrapper:hover img { transform: scale(1.03); }
+
+/* ================== 新增：红心收藏按钮 ================== */
+.thumb-fav-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.3); border: none; border-radius: 50%;
+    width: 32px; height: 32px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 18px; z-index: 10; color: white;
+}
+.photo-wrapper:hover .thumb-fav-btn { opacity: 1; }
+.thumb-fav-btn.active { opacity: 1; background: rgba(255, 255, 255, 0.9); transform: scale(1.1); }
+.thumb-fav-btn:hover { transform: scale(1.2); }
+
+/* ================== 右侧悬浮导航与 ScrollSpy 高亮 ================== */
+.timeline-sidebar {
+    position: sticky; top: 100px; align-self: flex-start;
+    display: flex; flex-direction: column; gap: 15px; padding-left: 20px; border-left: 2px solid var(--border-color);
+}
+.timeline-dot {
+    font-size: 13px; font-weight: 600; color: var(--text-secondary); position: relative;
+    padding-left: 15px; transition: all 0.2s;
+}
+.timeline-dot::before {
+    content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+    width: 10px; height: 10px; background: var(--border-color); border-radius: 50%; transition: all 0.2s;
+}
+.timeline-dot:hover { color: var(--accent-color); }
+.timeline-dot:hover::before { background: var(--accent-color); transform: translateY(-50%) scale(1.2); }
+
+/* ScrollSpy 滑动激活状态 */
+.timeline-dot.active {
+    color: var(--accent-color); font-weight: bold; font-size: 15px;
+}
+.timeline-dot.active::before {
+    background: var(--accent-color); transform: translateY(-50%) scale(1.6);
+    box-shadow: 0 0 8px rgba(0, 122, 255, 0.5);
+}
+
+/* ================== 酷炫特效：Toast 提示 ================== */
+.toast-container { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast {
+    background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px;
+    font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px;
+    box-shadow: var(--shadow-md); opacity: 0; transform: translateY(-20px) scale(0.9);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.toast.show { opacity: 1; transform: translateY(0) scale(1); }
+.toast.success { background: var(--success-color); }
+.toast.error { background: var(--danger-color); }
+
+/* ================== 酷炫特效：Modal 弹窗 ================== */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+.modal {
+    background: var(--card-bg); padding: 30px; border-radius: 20px; width: 400px; max-width: 90%;
+    box-shadow: var(--shadow-md); transform: scale(0.8); opacity: 0; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.show .modal { transform: scale(1); opacity: 1; }
+.modal-title { font-size: 20px; margin-bottom: 20px; }
+.modal-actions { margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ================== 酷炫特效：Lightbox 大图查看器 ================== */
+.lightbox {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--lightbox-bg); z-index: 2100;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.lightbox.show { opacity: 1; pointer-events: auto; }
+.lightbox img {
+    max-width: 90%; max-height: 90%; object-fit: contain;
+    transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 8px; box-shadow: var(--shadow-md); cursor: grab;
+}
+.lightbox.show img { transform: scale(1); }
+.lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; opacity: 0.7; transition: opacity 0.2s; z-index: 2102;}
+.lightbox-close:hover { opacity: 1; }
+
+/* Lightbox 左右翻页箭头 */
+.lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    color: white; font-size: 60px; cursor: pointer; padding: 20px;
+    user-select: none; opacity: 0.5; transition: opacity 0.2s, transform 0.2s; z-index: 2101;
+}
+.lb-nav:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
+.lb-prev { left: 30px; }
+.lb-next { right: 30px; }

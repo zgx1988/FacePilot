@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智能素材筛选库</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="global-nav fade-up">
+        <div class="nav-left">
+            <div class="nav-logo">AI 智能相册</div>
+            <div class="nav-links">
+                <a href="/" class="active">🏠 首页</a>
+                <a href="/favorites">❤️ 收藏夹</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container fade-up">
+        <div class="control-panel">
+            <div class="scan-group">
+                <div class="input-row">
+                    <input type="text" id="scan-path" placeholder="输入照片路径 (例如: D:\所有素材库)">
+                    <button class="btn" id="scan-btn" onclick="startScan()">智能扫描</button>
+                </div>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+                    <div class="progress-text" id="progress-text">系统准备中...</div>
+                </div>
+            </div>
+            <button class="btn btn-outline" id="mode-btn" onclick="toggleExportMode()">🔍 开启筛选导出</button>
+        </div>
+
+        <div class="grid" id="persons-grid">
+            {% for person in persons %}
+            <div class="card-container fade-up" style="transition-delay: {{ loop.index0 * 0.05 }}s;" id="person-card-{{ person.id }}">
+                <a href="/person/{{ person.id }}" class="card" onclick="handleCardClick({{ person.id }}, event)">
+                    <div class="cover-wrapper">
+                        <img class="cover" src="/static/{{ person.face_thumbnail_path | replace('\\', '/') }}" alt="头像">
+                        <div class="check-icon">✓</div>
+                    </div>
+                </a>
+                <div class="name-wrapper">
+                    <span class="name" id="name-{{ person.id }}" title="{{ person.name }}">{{ person.name }}</span>
+                    <button class="edit-btn" onclick="showRenameModal({{ person.id }}, '{{ person.name }}')">✏️</button>
+                </div>
+                <button class="hide-btn" onclick="hidePerson({{ person.id }})" title="清理非人脸">✕</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="export-bar" id="export-bar">
+        <div class="export-content container">
+            <div class="export-info">已选择: <span id="select-count">0</span> 人</div>
+            <input type="text" id="export-path" style="flex: 1; max-width: 500px;" placeholder="提取到新文件夹 (如: D:\筛选后图片)">
+            <div>
+                <button class="btn btn-outline" style="margin-right: 10px;" onclick="toggleExportMode()">取消</button>
+                <button class="btn" onclick="executeExport()">立即提取拷贝</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
