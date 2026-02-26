@@ -113,17 +113,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(activeLink) activeLink.classList.add('active');
                 }
             });
-        }, { rootMargin: '-20% 0px -70% 0px' }); // 屏幕滚到上方 20% 时触发高亮改变
+        }, { rootMargin: '-20% 0px -70% 0px' });
         sections.forEach(sec => spyObserver.observe(sec));
     }
 });
 
 // ================== 核心业务逻辑 ==================
 
-// 【新增】红心收藏切换
+// 红心收藏切换
 function toggleFav(imageId, event, btnEl) {
-    event.preventDefault(); // 阻止a标签的默认跳转
-    event.stopPropagation(); // 阻止冒泡
+    event.preventDefault(); 
+    event.stopPropagation(); 
     const isCurrentlyFav = btnEl.classList.contains('active');
     const targetStatus = isCurrentlyFav ? 0 : 1;
 
@@ -152,7 +152,6 @@ function toggleFav(imageId, event, btnEl) {
     });
 }
 
-// ... 下面的代码保持原样 (toggleExportMode, executeExport, rename 等) ...
 let isExportMode = false;
 let selectedPersons = new Set();
 let progressInterval = null;
@@ -161,21 +160,73 @@ function toggleExportMode() {
     isExportMode = !isExportMode;
     const modeBtn = document.getElementById('mode-btn');
     const exportBar = document.getElementById('export-bar');
-    if (isExportMode) { modeBtn.innerText = "退出筛选模式"; modeBtn.classList.replace('btn-outline', 'btn-danger'); exportBar.classList.add('active'); } 
-    else { modeBtn.innerText = "🔍 开启筛选/导出模式"; modeBtn.classList.replace('btn-danger', 'btn-outline'); exportBar.classList.remove('active'); selectedPersons.clear(); document.querySelectorAll('.card.selected').forEach(el => el.classList.remove('selected')); updateSelectCount(); }
+    if (isExportMode) { 
+        modeBtn.innerText = "退出筛选模式"; 
+        modeBtn.classList.replace('btn-outline', 'btn-danger'); 
+        exportBar.classList.add('active'); 
+    } else { 
+        modeBtn.innerText = "🔍 开启筛选/导出模式"; 
+        modeBtn.classList.replace('btn-danger', 'btn-outline'); 
+        exportBar.classList.remove('active'); 
+        selectedPersons.clear(); 
+        document.querySelectorAll('.card.selected').forEach(el => el.classList.remove('selected')); 
+        updateSelectCount(); 
+    }
 }
 
 function handleCardClick(personId, event) {
     if (isExportMode) {
         event.preventDefault();
         const card = event.currentTarget;
-        if (selectedPersons.has(personId)) { selectedPersons.delete(personId); card.classList.remove('selected'); } 
-        else { selectedPersons.add(personId); card.classList.add('selected'); }
+        if (selectedPersons.has(personId)) { 
+            selectedPersons.delete(personId); 
+            card.classList.remove('selected'); 
+        } else { 
+            selectedPersons.add(personId); 
+            card.classList.add('selected'); 
+        }
         updateSelectCount();
     }
 }
 
-function updateSelectCount() { const countEl = document.getElementById('select-count'); if(countEl) countEl.innerText = selectedPersons.size; }
+// 【增强版】更新数量并智能判断全选/取消全选按钮文字
+function updateSelectCount() { 
+    const countEl = document.getElementById('select-count'); 
+    if(countEl) countEl.innerText = selectedPersons.size; 
+    
+    const selectAllBtn = document.getElementById('select-all-btn');
+    if (selectAllBtn) {
+        const totalCards = document.querySelectorAll('.card-container').length;
+        if (totalCards > 0 && selectedPersons.size === totalCards) {
+            selectAllBtn.innerText = "取消全选";
+        } else {
+            selectAllBtn.innerText = "全选";
+        }
+    }
+}
+
+// 【新增】全选逻辑
+function toggleSelectAll() {
+    const allCardContainers = document.querySelectorAll('.card-container');
+    const totalCards = allCardContainers.length;
+
+    if (totalCards === 0) return;
+
+    if (selectedPersons.size === totalCards) {
+        // 取消全选
+        selectedPersons.clear();
+        document.querySelectorAll('.card.selected').forEach(el => el.classList.remove('selected'));
+    } else {
+        // 一键全选
+        allCardContainers.forEach(container => {
+            const idStr = container.id.replace('person-card-', '');
+            const personId = parseInt(idStr);
+            selectedPersons.add(personId);
+            container.querySelector('.card').classList.add('selected');
+        });
+    }
+    updateSelectCount();
+}
 
 function executeExport() {
     if (selectedPersons.size === 0) return showToast("请先点击头像选择至少一个人物", 'error');
