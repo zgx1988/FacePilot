@@ -56,6 +56,7 @@
             <div class="export-info">已选择: <span id="select-count">0</span> 人</div>
             <input type="text" id="export-path" style="flex: 1; max-width: 500px;" placeholder="提取到新文件夹 (如: D:\筛选后图片)">
             <div>
+                <button class="btn btn-outline" style="margin-right: 10px;" id="select-all-btn" onclick="toggleSelectAll()">全选</button>
                 <button class="btn btn-outline" style="margin-right: 10px;" onclick="toggleExportMode()">取消</button>
                 <button class="btn" onclick="executeExport()">立即提取拷贝</button>
             </div>
