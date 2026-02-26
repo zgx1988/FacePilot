@@ -42,8 +42,8 @@ FacePilot 是一款基于纯本地 AI 模型的智能相册管理工具。它无
 
 Bash
 # 1. 创建并激活虚拟环境
-python -m venv venv
-venv\Scripts\activate
+1.python -m venv venv
+2.venv\Scripts\activate
 
 # 2. 手动安装提供的 dlib 离线轮子包 (进入"需要安装的程序"目录下执行)
 pip install 需要安装的程序\dlib-19.22.99-cp310-cp310-win_amd64.whl
@@ -90,23 +90,3 @@ FacePilot/
 📝 License
 本项目基于 MIT 协议开源，欢迎自由探索与修改！
 
-💡 额外给你的建议：
-在使用 Git 上传时，千万不要把生成的图片和数据库传上去了！你需要在一个名为 .gitignore 的文件里写上以下内容（屏蔽掉不需要传的缓存和虚拟环境）：
-
-Plaintext
-# 数据库
-gallery.db
-
-# 静态生成的缓存图片
-static/avatars/*
-static/thumbnails/*
-
-# Python 虚拟环境和缓存
-venv/
-__pycache__/
-*.pyc
-
-# 打包工具的缓存（如果你之后用 Pyinstaller 打包的话）
-build/
-dist/
-*.spec
