@@ -1,5 +1,6 @@
 📸 FacePilot - AI 智能本地相册 (Local AI Photo Gallery)
 FacePilot 是一款基于纯本地 AI 模型的智能相册管理工具。它无需将照片上传至云端，即可自动扫描本地硬盘/移动硬盘中的照片，利用 AI 人脸识别技术进行智能聚类，并提供极具现代感的丝滑网页端交互体验。
+<img width="1912" height="948" alt="image" src="https://github.com/user-attachments/assets/454532ce-04d9-435b-9292-510dcecf6278" />
 
 ✨ 核心特性
 🔒 纯本地离线计算：所有照片分析与特征提取均在本地完成，彻底告别云端隐私泄露焦虑。
@@ -89,4 +90,5 @@ FacePilot/
     └── 安装介绍.ppt
 📝 License
 本项目基于 MIT 协议开源，欢迎自由探索与修改！
+
 
